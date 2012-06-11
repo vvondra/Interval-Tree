@@ -25,6 +25,10 @@ namespace IntervalTree
         {
             Start = start;
             End = end;
+
+            if (Start.CompareTo(End) > 0) {
+                throw new ArgumentException("Start cannot be larger than End of interval");
+            }
         }
 
         /// <summary>
