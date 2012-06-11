@@ -393,8 +393,8 @@ namespace IntervalTree
 
             pivot.Parent = parent;
 
-            node.RecalculateMaxEnd();
             pivot.RecalculateMaxEnd();
+            node.RecalculateMaxEnd();
 
         }
 
@@ -425,8 +425,8 @@ namespace IntervalTree
 
             pivot.Parent = parent;
 
-            node.RecalculateMaxEnd();
             pivot.RecalculateMaxEnd();
+            node.RecalculateMaxEnd();
         }
 
         #region Enumerators
