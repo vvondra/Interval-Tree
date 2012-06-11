@@ -40,13 +40,13 @@ namespace IntervalTree
         public IntervalNode()
         {
             Parent = Left = Right = IntervalTree<T>.Sentinel;
+            Color = NodeColor.BLACK;
         }
 
         public IntervalNode(Interval<T> interval) : this()
         {
             MaxEnd = interval.End;
             Interval = interval;
-            Color = NodeColor.BLACK;
         }
 
         /// <summary>
