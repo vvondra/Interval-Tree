@@ -184,7 +184,7 @@ namespace IntervalTree
 
             addedNode.Parent.RecalculateMaxEnd();
 
-            ApplyTreeConstraints(addedNode);
+            RenewConstraintsAfterInsert(addedNode);
 
             Root.Color = NodeColor.BLACK;
         }
@@ -193,7 +193,7 @@ namespace IntervalTree
         /// Validates and applies RB-tree constaints to node 
         /// </summary>
         /// <param name="node">node to be validated and fixed</param>
-        private void ApplyTreeConstraints(IntervalNode<T> node)
+        private void RenewConstraintsAfterInsert(IntervalNode<T> node)
         {
             if (node.Parent == Sentinel) {
                 return;
@@ -211,7 +211,7 @@ namespace IntervalTree
                 var gparent = node.GrandParent;
                 if (gparent != Sentinel && !gparent.IsRoot) {
                     gparent.Color = NodeColor.RED;
-                    ApplyTreeConstraints(gparent);
+                    RenewConstraintsAfterInsert(gparent);
                 }
             } else {
                 if (node.ParentDirection == NodeDirection.LEFT && node.Parent.ParentDirection == NodeDirection.RIGHT) {
