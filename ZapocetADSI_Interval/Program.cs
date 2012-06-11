@@ -61,7 +61,8 @@ namespace ZapocetADSI_Interval
                 Console.WriteLine("Insert\t{0}\t    {1}", i, sw.ElapsedMilliseconds);
                 Console.WriteLine("Memory after insert\t{0}", GC.GetTotalMemory(true));
 
-                sw.Restart();
+                sw.Reset();
+                sw.Start();
                 // Delete half of the inserted
                 for (int k = 0; k < i; k++) {
                     int index = randGen.Next(0, i);
