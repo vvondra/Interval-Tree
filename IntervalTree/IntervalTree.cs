@@ -462,7 +462,9 @@ namespace IntervalTree
                 }
             }
 
-            yield return node.Interval;
+            if (node != Sentinel) {
+                yield return node.Interval;
+            }
 
             if (node.Right != Sentinel) {
                 foreach (Interval<T> val in InOrderWalk(node.Right)) {
