@@ -293,7 +293,7 @@ namespace IntervalTree
             }
 
             if (node.Color == NodeColor.BLACK) {
-                RenewConstraintsAfterDelete(node);
+                RenewConstraintsAfterDelete(temp);
             }
              
         }
