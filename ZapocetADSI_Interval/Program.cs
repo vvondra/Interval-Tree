@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using IntervalTree;
-
+using System.Diagnostics;
 namespace ZapocetADSI_Interval
 {
     class Program
@@ -11,35 +11,67 @@ namespace ZapocetADSI_Interval
         static void Main(string[] args)
         {
 
-            InsertionComplexityTest(100000, 1000);
-            /*
-            var tree = new IntervalTree<long>();
+            var tree = createCormenTree();
 
-            int[] starts = new int[] { 16, 8, 25, 0, 26, 17, 15, 6, 19, 5};
-            int[] ends = new int[] { 21, 9, 30, 3, 26, 19, 23, 10, 20, 8 };
-            
-            int j = 0;
-           // for (int j = 0; j < 10; j++) {
-                for (int i = 0; i < starts.Length; i++) {
-                    tree.Add(new Interval<long>(starts[i] + j, ends[i] + j));
+            Debug.Assert(new Interval<long>(0, 3).Equals(tree.SearchFirstOverlapping(new Interval<long>(2, 4))));
 
-                    foreach (Interval<long> hi in tree) {
-                        Console.Write(hi.ToString() + " ");
-                    }
-                    Console.WriteLine();
-                }
-         //   }
+            Debug.Assert(
+                    tree.Search(18).Count == 3 // <17, 19>, <16, 21>, <15, 23>
+            );
 
-                tree.Remove(new Interval<long>(6, 10));
-                foreach (Interval<long> hi in tree) {
-                    Console.Write(hi.ToString() + " ");
-                }
-            */
+            Debug.Assert(
+                    tree.Search(12).Count == 0
+            );
+
+            Debug.Assert(
+                    tree.Search(-5).Count == 0
+            );
+
+            foreach (var n in tree) {
+                Console.Write("{0} ", n);
+            }
             Console.WriteLine();
+
+            // Remove root (two children)
+            tree.Remove(new Interval<long>(16, 21));
+            foreach (var n in tree) {
+                Console.Write("{0} ", n);
+            }
+            Console.WriteLine();
+
+            // Remove root (leaf)
+            tree.Remove(new Interval<long>(26, 26));
+            foreach (var n in tree) {
+                Console.Write("{0} ", n);
+            }
+            Console.WriteLine();
+
+            System.Threading.Thread.Sleep(3000);
+
+            // Test a lot of random numbers for tree consinstency and speed
+            LargeDatasetTest(60000, 1000);
             
         }
 
-        static void InsertionComplexityTest(int n, int steps)
+        /// <summary>
+        /// Tree from Introduction to algorithms
+        /// </summary>
+        /// <returns></returns>
+        static IntervalTree<long> createCormenTree()
+        {
+            var tree = new IntervalTree<long>();
+
+            int[] starts = new int[] { 16, 8, 25, 0, 26, 17, 15, 6, 19, 5 };
+            int[] ends = new int[] { 21, 9, 30, 3, 26, 19, 23, 10, 20, 8 };
+
+            for (int i = 0; i < starts.Length; i++) {
+                tree.Add(new Interval<long>(starts[i], ends[i]));
+            }
+
+            return tree;
+        }
+
+        static void LargeDatasetTest(int n, int steps)
         {
             Random randGen = new Random();
             int[] vals = new int[n];
@@ -73,6 +105,9 @@ namespace ZapocetADSI_Interval
                 sw.Stop();
 
                 Console.WriteLine("Delete\t{0}\t    {1}", i, sw.ElapsedMilliseconds);
+
+                // Does not seem to track memory correctly on Mono (as if no GC)
+                // On Windows, memory footprint is cca. 50% after delete, as expected
                 Console.WriteLine("Memory after delete\t{0}", GC.GetTotalMemory(true));
                 Console.Error.WriteLine("\nTesting {0}", i);
             }
