@@ -11,8 +11,8 @@ namespace ZapocetADSI_Interval
         static void Main(string[] args)
         {
 
-            //InsertionComplexityTest(200000, 800);
-            
+            InsertionComplexityTest(100000, 1000);
+            /*
             var tree = new IntervalTree<long>();
 
             int[] starts = new int[] { 16, 8, 25, 0, 26, 17, 15, 6, 19, 5};
@@ -30,11 +30,11 @@ namespace ZapocetADSI_Interval
                 }
          //   }
 
-                tree.Remove(new Interval<long>(0, 3));
+                tree.Remove(new Interval<long>(6, 10));
                 foreach (Interval<long> hi in tree) {
                     Console.Write(hi.ToString() + " ");
                 }
-            
+            */
             Console.WriteLine();
             
         }
@@ -58,10 +58,22 @@ namespace ZapocetADSI_Interval
                     tree.Add(new Interval<int>(vals[j], ends[j]));
                 }
 
+                Console.WriteLine("Insert\t{0}\t    {1}", i, sw.ElapsedMilliseconds);
+                Console.WriteLine("Memory after insert\t{0}", GC.GetTotalMemory(true));
+
+                sw.Restart();
+                // Delete half of the inserted
+                for (int k = 0; k < i; k++) {
+                    int index = randGen.Next(0, i);
+                    var xafu = new Interval<int>(vals[index], ends[index]);
+                    tree.Remove(xafu);
+                    //Console.WriteLine("Just delted {0}", xafu);
+                }
                 sw.Stop();
 
-                Console.WriteLine("{0}\t    {1}", i, sw.ElapsedMilliseconds);
-                Console.Error.WriteLine("Testing {0}", i);
+                Console.WriteLine("Delete\t{0}\t    {1}", i, sw.ElapsedMilliseconds);
+                Console.WriteLine("Memory after delete\t{0}", GC.GetTotalMemory(true));
+                Console.Error.WriteLine("\nTesting {0}", i);
             }
         }
     }
