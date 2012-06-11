@@ -11,7 +11,7 @@ namespace ZapocetADSI_Interval
         static void Main(string[] args)
         {
 
-            if (args.Length == 1 && args[0] == "example") {
+            if (args.Length == 1 && args[0] == "console") {
                 ConsoleTest();
             } else {
                 BasicTests();
