@@ -109,14 +109,14 @@ namespace IntervalTree
             T max = Interval.End;
 
             if (Right != IntervalTree<T>.Sentinel) {
-                if (Right.Interval.End.CompareTo(max) > 0) {
-                    max = Right.Interval.End;
+                if (Right.MaxEnd.CompareTo(max) > 0) {
+                    max = Right.MaxEnd;
                 }
             }
 
             if (Left != IntervalTree<T>.Sentinel) {
-                if (Left.Interval.End.CompareTo(max) > 0) {
-                    max = Left.Interval.End;
+                if (Left.MaxEnd.CompareTo(max) > 0) {
+                    max = Left.MaxEnd;
                 }
             }
 
