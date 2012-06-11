@@ -46,7 +46,7 @@ namespace IntervalTree
         {
             MaxEnd = interval.End;
             Interval = interval;
-            Color = NodeColor.RED;
+            Color = NodeColor.BLACK;
         }
 
         /// <summary>
