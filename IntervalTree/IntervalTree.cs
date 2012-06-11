@@ -73,17 +73,24 @@ namespace IntervalTree
 
         private IntervalNode<T> FindInterval(IntervalNode<T> tree, Interval<T> i)
         {
-            if (tree.Interval.CompareTo(i) == 0) {
-                return tree;
-            }
 
-            if (tree.Interval.CompareTo(i) > 0 && tree.Left != Sentinel) {
-                return FindInterval(tree.Left, i);
-            }
+            while (tree != Sentinel) {
 
-            if (tree.Interval.CompareTo(i) < 0 && tree.Right != Sentinel) {
-                return FindInterval(tree.Right, i);
+                if (tree.Interval.CompareTo(i) > 0) {
+                    tree = tree.Left;
+                    continue;
+                }
+
+                if (tree.Interval.CompareTo(i) < 0) {
+                    tree = tree.Right;
+                    continue;
+                }
+
+                if (tree.Interval.CompareTo(i) == 0) {
+                    return tree;
+                }
             }
+            
 
             return Sentinel;
             
