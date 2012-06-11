@@ -11,6 +11,90 @@ namespace ZapocetADSI_Interval
         static void Main(string[] args)
         {
 
+            if (args.Length == 1 && args[0] == "example") {
+                ConsoleTest();
+            } else {
+                BasicTests();
+            }
+        }
+
+        static void ConsoleTest()
+        {
+            string line;
+            var tree = new IntervalTree<int>();
+
+            Console.WriteLine("Enter intervals as \"p q\" to add to tree, each on a new line, end with 0:");
+            line = Console.ReadLine();
+            while (line != "0") {
+                string[] bits = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (bits.Length != 2) {
+                    break;
+                }
+
+                int start, end;
+                if (Int32.TryParse(bits[0], out start) && Int32.TryParse(bits[1], out end)) {
+                    tree.Add(new Interval<int>(start, end));
+                } else {
+                    break;
+                }
+
+                line = Console.ReadLine();
+            }
+            foreach (var n in tree) {
+                Console.Write("{0} ", n);
+            }
+            
+            Console.WriteLine();
+
+            Console.WriteLine("Enter intervals as \"p q\" to delete from tree, each on a new line, end with 0:");
+            line = Console.ReadLine();
+            while (line != "0") {
+                string[] bits = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (bits.Length != 2) {
+                    break;
+                }
+
+                int start, end;
+                if (Int32.TryParse(bits[0], out start) && Int32.TryParse(bits[1], out end)) {
+                    tree.Remove(new Interval<int>(start, end));
+                } else {
+                    break;
+                }
+
+                line = Console.ReadLine();
+            }
+            foreach (var n in tree) {
+                Console.Write("{0} ", n);
+            }
+            Console.WriteLine();
+            Console.WriteLine("Enter intervals as \"p q\", first overlapping interval will be found, end with 0:");
+            line = Console.ReadLine();
+            while (line != "0") {
+                string[] bits = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (bits.Length != 2) {
+                    break;
+                }
+
+                int start, end;
+                if (Int32.TryParse(bits[0], out start) && Int32.TryParse(bits[1], out end)) {
+                    try {
+                        Console.WriteLine(tree.SearchFirstOverlapping(new Interval<int>(start, end)));
+                    } catch (KeyNotFoundException e) {
+                        Console.WriteLine("Not found");
+                    }
+                } else {
+                    break;
+                }
+
+                line = Console.ReadLine();
+            }
+
+            Console.ReadLine();
+
+        }
+
+        static void BasicTests()
+        {
             var tree = createCormenTree();
 
             Debug.Assert(new Interval<long>(0, 3).Equals(tree.SearchFirstOverlapping(new Interval<long>(2, 4))));
@@ -50,7 +134,6 @@ namespace ZapocetADSI_Interval
 
             // Test a lot of random numbers for tree consinstency and speed
             LargeDatasetTest(60000, 1000);
-            
         }
 
         /// <summary>
