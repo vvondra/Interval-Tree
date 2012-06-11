@@ -63,5 +63,8 @@ Searching is done by descending down the tree. In each node, the following invar
 During descent, one of two paths are followed. The left subtree is ommited if the start of the interval is greater than the `MaxEnd` of the left node: clearly it cannot be located there. If the search goes Left, there must be an overlapping interval in the left subtree as there exists and interval i, whose end value equals left's `MaxEnd`.
 
 
+Building
+--------
 
+On Windows, the application is prepared as a VS 2010 project. On Mono, clone the repository and run xbuild.
 
