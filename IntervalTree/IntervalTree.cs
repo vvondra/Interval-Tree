@@ -308,7 +308,7 @@ namespace IntervalTree
         {
             // Need to bubble up and fix
             while (node != Root && node.Color == NodeColor.BLACK) {
-                if (node.ParentDirection == NodeDirection.LEFT) {
+                if (node.ParentDirection == NodeDirection.RIGHT) {
                     IntervalNode<T> aux = node.Parent.Right;
                     if (aux.Color == NodeColor.RED) {
                         aux.Color = NodeColor.BLACK;
