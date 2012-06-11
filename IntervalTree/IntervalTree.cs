@@ -24,6 +24,7 @@ namespace IntervalTree
             Root = Sentinel;
             Root.Left = Sentinel;
             Root.Right = Sentinel;
+            Root.Parent = Sentinel;
         }
 
         #region Tree searching
