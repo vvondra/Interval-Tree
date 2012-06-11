@@ -11,10 +11,17 @@ namespace IntervalTree
     public partial class IntervalTree<T> : IEnumerable<Interval<T>> where T : struct, IComparable<T>
     {
 
+        internal static IntervalNode<T> Sentinel = new IntervalNode<T>(new Interval<T>());
+
         IntervalNode<T> Root
         {
             get;
             set;
+        }
+
+        public IntervalTree()
+        {
+            Root = Sentinel;
         }
 
         #region Tree searching
@@ -43,11 +50,11 @@ namespace IntervalTree
         }
 
         private void SearchSubtree(IntervalNode<T> node, Interval<T> i, List<Interval<T>> result) {
-            if (node == null) {
+            if (node == Sentinel) {
                 return;
             }
 
-            if (node.Left != null) {
+            if (node.Left != Sentinel) {
                 SearchSubtree(node.Left, i, result);
             }
 
@@ -56,7 +63,7 @@ namespace IntervalTree
             }
 
             // Interval start is greater than largest endpoint in this subtree
-            if (node.Right != null && i.Start.CompareTo(node.MaxEnd) <= 0) {
+            if (node.Right != Sentinel && i.Start.CompareTo(node.MaxEnd) <= 0) {
                 SearchSubtree(node.Right, i, result);
             }
         }
@@ -67,15 +74,15 @@ namespace IntervalTree
                 return tree;
             }
 
-            if (tree.Interval.CompareTo(i) > 0 && tree.Left != null) {
+            if (tree.Interval.CompareTo(i) > 0 && tree.Left != Sentinel) {
                 return FindInterval(tree.Left, i);
             }
 
-            if (tree.Interval.CompareTo(i) < 0 && tree.Right != null) {
+            if (tree.Interval.CompareTo(i) < 0 && tree.Right != Sentinel) {
                 return FindInterval(tree.Right, i);
             }
 
-            return null;
+            return Sentinel;
             
         }
 
@@ -87,7 +94,7 @@ namespace IntervalTree
         /// <param name="result">current resultset</param>
         private void SearchSubtree(IntervalNode<T> node, T val, List<Interval<T>> result)
         {
-            if (node == null) {
+            if (node == Sentinel) {
                 return;
             }
 
@@ -96,7 +103,7 @@ namespace IntervalTree
                 return;
             }
 
-            if (node.Left != null) {
+            if (node.Left != Sentinel) {
                 SearchSubtree(node.Left, val, result);
             }
 
@@ -108,7 +115,7 @@ namespace IntervalTree
                 return;
             }
 
-            if (node.Right != null) {
+            if (node.Right != Sentinel) {
                 SearchSubtree(node.Right, val, result);
             }
         }
@@ -122,7 +129,7 @@ namespace IntervalTree
         public void Add(Interval<T> interval)
         {
             var node = new IntervalNode<T>(interval);
-            if (Root == null) {
+            if (Root == Sentinel) {
                 node.Color = NodeColor.BLACK;
                 Root = node;
             } else {
@@ -140,9 +147,9 @@ namespace IntervalTree
         /// <param name="currentNode">subtree accessed in recursion</param>
         private void InsertInterval(Interval<T> interval, IntervalNode<T> currentNode)
         {
-            IntervalNode<T> addedNode = null;
+            IntervalNode<T> addedNode = Sentinel;
             if (interval.CompareTo(currentNode.Interval) < 0) {
-                if (currentNode.Left == null) {
+                if (currentNode.Left == Sentinel) {
                     addedNode = new IntervalNode<T>(interval);
                     addedNode.Color = NodeColor.RED;
                     currentNode.Left = addedNode;
@@ -152,7 +159,7 @@ namespace IntervalTree
                     return;
                 }
             } else if (interval.CompareTo(currentNode.Interval) > 0) {
-                if (currentNode.Right == null) {
+                if (currentNode.Right == Sentinel) {
                     addedNode = new IntervalNode<T>(interval);
                     addedNode.Color = NodeColor.RED;
                     currentNode.Right = addedNode;
@@ -178,7 +185,7 @@ namespace IntervalTree
         /// <param name="node">node to be validated and fixed</param>
         private void ApplyTreeConstraints(IntervalNode<T> node)
         {
-            if (node.Parent == null) {
+            if (node.Parent == Sentinel) {
                 return;
             }
 
@@ -188,11 +195,11 @@ namespace IntervalTree
 
             var uncle = node.Uncle;
 
-            if (uncle != null && uncle.Color == NodeColor.RED) {
+            if (uncle != Sentinel && uncle.Color == NodeColor.RED) {
                 node.Parent.Color = uncle.Color = NodeColor.BLACK;
 
                 var gparent = node.GrandParent;
-                if (gparent != null && !gparent.IsRoot) {
+                if (gparent != Sentinel && !gparent.IsRoot) {
                     gparent.Color = NodeColor.RED;
                     ApplyTreeConstraints(gparent);
                 }
@@ -207,7 +214,7 @@ namespace IntervalTree
 
                 node.Parent.Color = NodeColor.BLACK;
 
-                if (node.GrandParent == null) {
+                if (node.GrandParent == Sentinel) {
                     return;
                 }
                 node.GrandParent.Color = NodeColor.RED;
@@ -233,12 +240,12 @@ namespace IntervalTree
 
         private void RemoveNode(IntervalNode<T> node)
         {
-            if (node == null) {
+            if (node == Sentinel) {
                 return;
             }
 
             IntervalNode<T> temp = node;
-            if (node.Right != null && node.Left != null) {
+            if (node.Right != Sentinel && node.Left != Sentinel) {
                 // Trick when deleting node with both children, switch it with closest in order node
                 // swap values and delete the bottom node converting it to other cases
 
@@ -246,13 +253,13 @@ namespace IntervalTree
                 node.Interval = temp.Interval;
 
                 node.RecalculateMaxEnd();
-                while (node.Parent != null) {
+                while (node.Parent != Sentinel) {
                     node = node.Parent;
                     node.RecalculateMaxEnd();
                 }
             }
             node = temp;
-            temp = node.Left != null ? node.Left : node.Right;
+            temp = node.Left != Sentinel ? node.Left : node.Right;
 
             // we will replace node with temp and delete node
             temp.Parent = node.Parent;
@@ -269,7 +276,7 @@ namespace IntervalTree
 
                 IntervalNode<T> maxAux = node.Parent;
                 maxAux.RecalculateMaxEnd();
-                while (maxAux.Parent != null) {
+                while (maxAux.Parent != Sentinel) {
                     maxAux = maxAux.Parent;
                     maxAux.RecalculateMaxEnd();
                 }
@@ -357,23 +364,23 @@ namespace IntervalTree
 
                 // Reset parent pointer to node
                 if (node.ParentDirection == NodeDirection.LEFT) {
-                    node.Parent.Right = null;
+                    node.Parent.Right = Sentinel;
                 } else if (node.ParentDirection == NodeDirection.RIGHT) {
-                    node.Parent.Left = null;
+                    node.Parent.Left = Sentinel;
                 }
 
-                node.Parent = null;
+                node.Parent = Sentinel;
 
                 // Only removal of a black node could break the tree constraints
                 if (node.Color == NodeColor.BLACK) {
 
-                    if (sibling != null) {
+                    if (sibling != Sentinel) {
 
                         // Node and sibling were both leaves, just move the black node up one level
                         if (sibling.IsLeaf) {
                             sibling.Color = NodeColor.RED;
                             sibling.Parent.Color = NodeColor.BLACK;
-                        } else if (sibling.Right != null && sibling.Left == null) {
+                        } else if (sibling.Right != Sentinel && sibling.Left == Sentinel) {
                             
                             // sibling has a right child
                             if (sibling.CompareTo(node) > 0) {
@@ -390,7 +397,7 @@ namespace IntervalTree
                                 sibling.GrandParent.Color = NodeColor.BLACK;
                                 RotateRight(sibling.GrandParent);
                             }
-                        } else if (sibling.Left != null && sibling.Right == null) {
+                        } else if (sibling.Left != Sentinel && sibling.Right == Sentinel) {
 
                             // sibling has a left child
                             if (sibling.CompareTo(node) > 0) {
@@ -407,7 +414,7 @@ namespace IntervalTree
                                 sibling.Parent.Color = NodeColor.BLACK;
                                 RotateRight(sibling.Parent);
                             }
-                        } else if (sibling.Left != null && sibling.Right != null) {
+                        } else if (sibling.Left != Sentinel && sibling.Right != Sentinel) {
                             // sibling has both children
 
                             if (sibling.Color == NodeColor.BLACK) {
@@ -450,7 +457,7 @@ namespace IntervalTree
             pivot.Right = node;
             node.Parent = pivot;
             node.Left = tempTree;
-            if (tempTree != null) {
+            if (tempTree != Sentinel) {
                 tempTree.Parent = node;
             }
 
@@ -482,7 +489,7 @@ namespace IntervalTree
             pivot.Left = node;
             node.Parent = pivot;
             node.Right = tempTree;
-            if (tempTree != null) {
+            if (tempTree != Sentinel) {
                 tempTree.Parent = node;
             }
 
@@ -503,7 +510,7 @@ namespace IntervalTree
         #region Enumerators
         private IEnumerable<Interval<T>> InOrderWalk(IntervalNode<T> node)
         {
-            if (node.Left != null) {
+            if (node.Left != Sentinel) {
                 foreach (Interval<T> val in InOrderWalk(node.Left)) {
                     yield return val;
                 }
@@ -511,7 +518,7 @@ namespace IntervalTree
 
             yield return node.Interval;
 
-            if (node.Right != null) {
+            if (node.Right != Sentinel) {
                 foreach (Interval<T> val in InOrderWalk(node.Right)) {
                     yield return val;
                 }

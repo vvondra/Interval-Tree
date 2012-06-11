@@ -37,7 +37,12 @@ namespace IntervalTree
             
         }
 
-        public IntervalNode(Interval<T> interval)
+        public IntervalNode()
+        {
+            Parent = Left = Right = IntervalTree<T>.Sentinel;
+        }
+
+        public IntervalNode(Interval<T> interval) : this()
         {
             MaxEnd = interval.End;
             Interval = interval;
@@ -49,7 +54,7 @@ namespace IntervalTree
         /// </summary>
         public bool IsRoot
         {
-            get { return Parent == null; }
+            get { return Parent == IntervalTree<T>.Sentinel; }
         }
 
         /// <summary>
@@ -57,7 +62,7 @@ namespace IntervalTree
         /// </summary>
         public bool IsLeaf
         {
-            get { return Right == null && Left == null; }
+            get { return Right == IntervalTree<T>.Sentinel && Left == IntervalTree<T>.Sentinel; }
         }
 
         /// <summary>
@@ -67,7 +72,7 @@ namespace IntervalTree
         {
             get
             {
-                if (Parent == null) {
+                if (Parent == IntervalTree<T>.Sentinel) {
                     return NodeDirection.NONE;
                 }
 
@@ -77,12 +82,12 @@ namespace IntervalTree
 
         public IntervalNode<T> GetSuccessor()
         {
-            if (Right == null) {
-                return null;
+            if (Right == IntervalTree<T>.Sentinel) {
+                return IntervalTree<T>.Sentinel;
             }
 
             var node = Right;
-            while (node.Left != null) {
+            while (node.Left != IntervalTree<T>.Sentinel) {
                 node = node.Left;
             }
 
@@ -103,13 +108,13 @@ namespace IntervalTree
         {
             T max = Interval.End;
 
-            if (Right != null) {
+            if (Right != IntervalTree<T>.Sentinel) {
                 if (Right.Interval.End.CompareTo(max) > 0) {
                     max = Right.Interval.End;
                 }
             }
 
-            if (Left != null) {
+            if (Left != IntervalTree<T>.Sentinel) {
                 if (Left.Interval.End.CompareTo(max) > 0) {
                     max = Left.Interval.End;
                 }
@@ -121,29 +126,29 @@ namespace IntervalTree
         /// <summary>
         /// Return grandparent node
         /// </summary>
-        /// <returns>grandparent node or null if none</returns>
+        /// <returns>grandparent node or IntervalTree<T>.Sentinel if none</returns>
         public IntervalNode<T> GrandParent
         {
             get
             {
-                if (Parent != null) {
+                if (Parent != IntervalTree<T>.Sentinel) {
                     return Parent.Parent;
                 }
-                return null;
+                return IntervalTree<T>.Sentinel;
             }
         }
 
         /// <summary>
         /// Returns sibling of parent node
         /// </summary>
-        /// <returns>sibling of parent node or null if none</returns>
+        /// <returns>sibling of parent node or IntervalTree<T>.Sentinel if none</returns>
         public IntervalNode<T> Uncle
         {
             get
             {
                 var gparent = GrandParent;
-                if (gparent == null) {
-                    return null;
+                if (gparent == IntervalTree<T>.Sentinel) {
+                    return IntervalTree<T>.Sentinel;
                 }
 
                 if (Parent == gparent.Left) {
@@ -157,12 +162,12 @@ namespace IntervalTree
         /// <summary>
         /// Returns sibling node
         /// </summary>
-        /// <returns>sibling node or null if none</returns>
+        /// <returns>sibling node or IntervalTree<T>.Sentinel if none</returns>
         public IntervalNode<T> Sibling
         {
             get
             {
-                if (Parent != null) {
+                if (Parent != IntervalTree<T>.Sentinel) {
                     if (Parent.Right == this) {
                         return Parent.Left;
                     }
@@ -170,7 +175,7 @@ namespace IntervalTree
                     return Parent.Right;
                 }
 
-                return null;
+                return IntervalTree<T>.Sentinel;
             }
         }
     }
