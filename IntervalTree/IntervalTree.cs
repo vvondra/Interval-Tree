@@ -52,6 +52,30 @@ namespace IntervalTree
             return result;
         }
 
+        /// <summary>
+        /// Searches for the first overlapping interval
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public Interval<T> SearchFirstOverlapping(Interval<T> i)
+        {
+            var node = Root;
+
+            while (node != Sentinel && !node.Interval.Overlaps(i)) {
+                if (node.Left != Sentinel && node.Left.MaxEnd.CompareTo(i.Start) >= 0) {
+                    node = node.Left;
+                } else {
+                    node = node.Right;
+                }
+            }
+
+            if (node == Sentinel) {
+                throw new KeyNotFoundException("No overlapping interval found.");
+            }
+
+            return node.Interval;
+        }
+
         private void SearchSubtree(IntervalNode<T> node, Interval<T> i, List<Interval<T>> result) {
             if (node == Sentinel) {
                 return;

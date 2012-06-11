@@ -52,6 +52,16 @@ By examining all the possible scenarios, during both operations, all the tree co
 
 As a point can be present in all of the intervals in the tree, worst case querying is O(N). To reduce the amount of tests and traversing, two scenarios can be cut off - when the value is larger than the `MaxEnd` value of the node (then it cannot be in the whole subtree) or if its smaller than the start point of the interval of a node, then it cannot be in the right subtree.
 
+### Querying for first overlapping interval
+
+The fastest check is whether an overlapping interval exists (e.g. to use when looking for a conflict in a time schedule). The search method either stops when it reaches the sentinel node (no matches) or when it finds an overlapping match. If such exists, it always returns it. 
+
+The query runs in O(lg n), since following one path is enough to determine if the tree has an overlapping interval.
+
+Searching is done by descending down the tree. In each node, the following invariant holds: *If the tree contains an overlapping interval, it is located in the subtree of the node*. When starting from root, it holds.
+
+During descent, one of two paths are followed. The left subtree is ommited if the start of the interval is greater than the `MaxEnd` of the left node: clearly it cannot be located there. If the search goes Left, there must be an overlapping interval in the left subtree as there exists and interval i, whose end value equals left's `MaxEnd`.
+
 
 
 
