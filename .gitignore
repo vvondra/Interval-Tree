@@ -7,8 +7,24 @@
 *.ncb
 *.log 
 *.DS_Store
-[Tt]humbs.db 
-_ReSharper.*
-*.resharper
+
+# OS generated files  
+**/[Tt]humbs.db
+**/[Dd]esktop.ini
+
+# resharper  
+/_[Rr]e[Ss]harper.*  
+*.[Rr]e[Ss]harper.*  
+*.[Rr]e[Ss]harper  
+_[Rr]e[Ss]harper.*
+
 Ankh.NoLoad
 
+# Nuget packages
+packages/*
+!packages/repositories.config
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx

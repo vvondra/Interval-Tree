@@ -121,6 +121,10 @@ namespace IntervalTree
             }
 
             MaxEnd = max;
+
+            if (Parent != IntervalTree<T>.Sentinel) {
+                Parent.RecalculateMaxEnd();
+            }
         }
 
         /// <summary>
